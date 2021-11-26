@@ -1,6 +1,6 @@
 package com.kapcb.framework.logging.collector;
 
-import com.kapcb.framework.logging.model.LogData;
+import com.kapcb.framework.logging.model.ILog;
 
 /**
  * <a>Title: ILogCollector </a>
@@ -11,6 +11,6 @@ import com.kapcb.framework.logging.model.LogData;
  * @version 1.0.0
  * @date 2021/11/26 22:55
  */
-public interface ILogCollector extends Collector<LogData> {
+public interface ILogCollector extends Collector<ILog> {
 
 }
