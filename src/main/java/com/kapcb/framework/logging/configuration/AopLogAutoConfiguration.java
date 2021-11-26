@@ -1,8 +1,8 @@
 package com.kapcb.framework.logging.configuration;
 
 import com.kapcb.framework.logging.collector.Collector;
+import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
@@ -23,7 +23,8 @@ public abstract class AopLogAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(value = {Collector.class})
     public Collector defaultLogCollector() {
-
+        log.info("[ can not found log collector, will use default log collector ]");
+        return new NothingLogCollector();
     }
 
     @Bean
