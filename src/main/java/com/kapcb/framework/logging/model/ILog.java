@@ -9,5 +9,6 @@ package com.kapcb.framework.logging.model;
  * @version 1.0.0
  * @date 2021/11/25 22:30
  */
-public class ILog {
+public interface ILog {
+
 }
