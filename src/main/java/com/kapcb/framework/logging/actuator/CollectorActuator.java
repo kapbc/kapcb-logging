@@ -26,7 +26,7 @@ public class CollectorActuator {
      * @param log       D
      * @param <D>       <D>
      */
-    @Async
+    @Async("asyncExecutor")
     public <D> void asyncExecute(Collector<D> collector, D log) {
         collector.collect(log);
     }
