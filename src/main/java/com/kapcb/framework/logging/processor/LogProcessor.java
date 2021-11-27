@@ -144,5 +144,4 @@ public class LogProcessor {
             return logCollector;
         }
     }
-
 }
