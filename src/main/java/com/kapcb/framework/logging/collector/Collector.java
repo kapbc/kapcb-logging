@@ -12,6 +12,11 @@ package com.kapcb.framework.logging.collector;
 @FunctionalInterface
 public interface Collector<T> {
 
+    /**
+     * collector to collect log
+     *
+     * @param data T
+     */
     void collect(T data);
 
 }

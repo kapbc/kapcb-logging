@@ -1,6 +1,8 @@
 package com.kapcb.framework.logging.collector.impl;
 
 import com.kapcb.framework.logging.collector.Collector;
+import com.kapcb.framework.logging.collector.ILogCollector;
+import com.kapcb.framework.logging.model.ILog;
 
 /**
  * <a>Title: NothingLogCollector </a>
@@ -11,11 +13,10 @@ import com.kapcb.framework.logging.collector.Collector;
  * @version 1.0.0
  * @date 2021/11/26 23:15
  */
-public class NothingLogCollector implements Collector {
+public class NothingLogCollector implements ILogCollector {
 
     @Override
-    public void collect(Object data) {
-        // do nothing
-    }
+    public void collect(ILog data) {
 
+    }
 }

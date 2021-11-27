@@ -1,6 +1,7 @@
 package com.kapcb.framework.logging.annotation;
 
 import com.kapcb.framework.logging.collector.Collector;
+import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
 import org.springframework.http.HttpHeaders;
 
@@ -26,17 +27,15 @@ public @interface Logging {
 
     boolean logOnError() default false;
 
-    String tag() default "undefined";
-
     String[] headers() default {HttpHeaders.USER_AGENT, HttpHeaders.CONTENT_TYPE};
 
     boolean args() default true;
 
-    boolean responseBody() default true;
+    boolean response() default true;
 
     boolean stackTraceOnError() default false;
 
     boolean enableAsync() default true;
 
-    Class<? extends Collector> collector() default NothingLogCollector.class;
+    Class<? extends ILogCollector> collector() default NothingLogCollector.class;
 }

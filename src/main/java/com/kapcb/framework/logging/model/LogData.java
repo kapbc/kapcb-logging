@@ -50,5 +50,4 @@ public class LogData implements ILog {
     private Long threadId = Thread.currentThread().getId();
 
     private Boolean success;
-
 }
