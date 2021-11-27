@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
@@ -57,8 +56,7 @@ public class LogAutoConfiguration {
      * asyncExecutor {@link AsyncConfiguration#asyncExecutor()}
      */
     @Bean
-    @Order(100)
-    @ConditionalOnMissingBean(name = "asyncExecutor")
+    @ConditionalOnMissingBean(name = {"asyncExecutor"})
     public Executor defaultCollectorAsyncExecutor() {
         log.info("[ can not found any customer async executor, will use default collector async executor ]");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

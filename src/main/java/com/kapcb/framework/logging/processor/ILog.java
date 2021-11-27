@@ -29,6 +29,8 @@ public interface ILog {
 
     void setHeaders(Object headers);
 
+    String getContent();
+
     void setContent(String content);
 
     void setArgs(Object args);

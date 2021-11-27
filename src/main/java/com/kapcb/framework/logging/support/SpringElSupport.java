@@ -36,10 +36,10 @@ public class SpringElSupport {
                 Expression expression;
                 MethodBasedEvaluationContext methodBasedEvaluationContext = new MethodBasedEvaluationContext(new ExpressionRootObject(target, args), method, args, parameterNameDiscoverer);
                 if (expressions.containsKey(springElExpression)) {
-                    return expressions.get(springElExpression).getValue();
+                    return expressions.get(springElExpression).getValue(methodBasedEvaluationContext);
                 } else {
                     expression = spelExpressionParser.parseExpression(springElExpression);
-                    Object value = expression.getValue();
+                    Object value = expression.getValue(methodBasedEvaluationContext);
                     expressions.put(springElExpression, expression);
                     return value;
                 }

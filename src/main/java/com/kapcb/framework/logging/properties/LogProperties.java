@@ -24,6 +24,11 @@ public class LogProperties {
     private Boolean logOnError;
 
     /**
+     * 操作分类
+     */
+    private String tag;
+
+    /**
      * 记录请求headers, 默认记录 content-type user-agent
      */
     private String[] headers;
@@ -55,6 +60,7 @@ public class LogProperties {
 
     public LogProperties() {
         this.logOnError = false;
+        this.tag = "undefined";
         this.headers = new String[]{HttpHeaders.CONTENT_TYPE, HttpHeaders.USER_AGENT};
         this.args = true;
         this.response = true;

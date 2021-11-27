@@ -56,6 +56,7 @@ public final class LogAspect {
             logProperties.setLogOnError(logging.logOnError());
             logProperties.setHeaders(logging.headers());
             logProperties.setArgs(logging.args());
+            logProperties.setTag(logging.tags());
             logProperties.setResponse(logging.response());
             logProperties.setStackTraceOnError(logging.stackTraceOnError());
             logProperties.setEnableAsync(logging.enableAsync());

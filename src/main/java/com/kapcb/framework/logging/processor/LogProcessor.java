@@ -100,7 +100,7 @@ public class LogProcessor {
         } catch (Throwable throwable) {
             if (logProperties.getStackTraceOnError()) {
                 String stackTrace = ThrowableUtil.getStackTrace(throwable);
-                LogData.step("fail : \n" + stackTrace);
+                LogData.step("fail : " + stackTrace);
             }
             throw throwable;
         } finally {
@@ -108,6 +108,8 @@ public class LogProcessor {
                 log.setServerName(this.serverName);
                 log.setCostTime(System.currentTimeMillis() - log.getLogDate().getTime());
                 MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
+                String tag = springElSupport.getByExpression(signature.getMethod(), proceedingJoinPoint.getTarget(), proceedingJoinPoint.getArgs(), logProperties.getTag()).toString();
+                System.out.println("tag = " + tag);
                 log.setProcessMethod(signature.getDeclaringTypeName() + StringPool.SHARP.value() + signature.getName());
                 LogExtractor.logHttpRequest(log, logProperties.getHeaders());
                 if (logProperties.getArgs()) {

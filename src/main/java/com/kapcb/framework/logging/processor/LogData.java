@@ -43,8 +43,6 @@ public class LogData implements ILog {
 
     private Object headers;
 
-    private String content;
-
     private Object args;
 
     private Object response;
@@ -59,6 +57,8 @@ public class LogData implements ILog {
 
     private Boolean success;
 
+    private String content;
+
     /**
      * get current thread log object
      *
@@ -69,7 +69,7 @@ public class LogData implements ILog {
             ILog log = new LogData();
             log.setLogDate(new Date());
             StringBuilder sb = STRING_BUILDER_THREAD_LOCAL.get();
-            if (StringUtils.isNotBlank(sb)) {
+            if (Objects.isNull(sb)) {
                 STRING_BUILDER_THREAD_LOCAL.set(new StringBuilder());
             }
             LOG_DATA_THREAD_LOCAL.set(log);
@@ -83,7 +83,7 @@ public class LogData implements ILog {
      * @param log ILog
      */
     protected static void setCurrent(ILog log) {
-        if (StringUtils.isNotBlank(STRING_BUILDER_THREAD_LOCAL.get())) {
+        if (Objects.nonNull(STRING_BUILDER_THREAD_LOCAL.get())) {
             log.setContent(STRING_BUILDER_THREAD_LOCAL.get().toString());
         }
         LOG_DATA_THREAD_LOCAL.set(log);
@@ -92,7 +92,7 @@ public class LogData implements ILog {
     /**
      * remove current thread's log and log content
      */
-    public static void removeCurrent() {
+    protected static void removeCurrent() {
         STRING_BUILDER_THREAD_LOCAL.remove();
         LOG_DATA_THREAD_LOCAL.remove();
     }
@@ -107,7 +107,7 @@ public class LogData implements ILog {
             throw new LogOperationException("step can not be null");
         }
         StringBuilder sb = STRING_BUILDER_THREAD_LOCAL.get();
-        if (StringUtils.isNotBlank(sb)) {
+        if (Objects.nonNull(sb)) {
             sb.append(step).append("\n");
             STRING_BUILDER_THREAD_LOCAL.set(sb);
         }
@@ -123,4 +123,37 @@ public class LogData implements ILog {
         step(LogMessageFormatter.format(stepTemplate, args));
     }
 
+    @Override
+    public Date getLogDate() {
+        return Objects.isNull(logDate) ? null : (Date) logDate.clone();
+    }
+
+    @Override
+    public void setLogDate(Date logDate) {
+        if (Objects.nonNull(logDate)) {
+            this.logDate = (Date) logDate.clone();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "LogData{" +
+                "serverName='" + serverName + '\'' +
+                ", host='" + host + '\'' +
+                ", port=" + port +
+                ", clientIp='" + clientIp + '\'' +
+                ", requestUrl='" + requestUrl + '\'' +
+                ", httpMethod='" + httpMethod + '\'' +
+                ", processMethod='" + processMethod + '\'' +
+                ", headers=" + headers +
+                ", args=" + args +
+                ", response=" + response +
+                ", logDate=" + logDate +
+                ", costTime=" + costTime +
+                ", threadName='" + threadName + '\'' +
+                ", threadId=" + threadId +
+                ", success=" + success +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

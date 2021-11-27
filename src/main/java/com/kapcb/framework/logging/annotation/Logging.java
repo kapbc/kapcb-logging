@@ -26,6 +26,8 @@ public @interface Logging {
 
     boolean logOnError() default false;
 
+    String tags() default "undefined";
+
     String[] headers() default {HttpHeaders.USER_AGENT, HttpHeaders.CONTENT_TYPE};
 
     boolean args() default true;

@@ -15,8 +15,8 @@ public interface Collector<T> {
     /**
      * collector to collect log
      *
-     * @param data T
+     * @param logInfo T
      */
-    void collect(T data);
+    void collect(T logInfo);
 
 }

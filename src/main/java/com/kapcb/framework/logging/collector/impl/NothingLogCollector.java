@@ -15,7 +15,7 @@ import com.kapcb.framework.logging.processor.ILog;
 public class NothingLogCollector implements ILogCollector {
 
     @Override
-    public void collect(ILog data) {
+    public void collect(ILog log) {
 
     }
 }
