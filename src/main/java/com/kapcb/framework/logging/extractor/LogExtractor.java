@@ -2,7 +2,7 @@ package com.kapcb.framework.logging.extractor;
 
 import com.kapcb.framework.common.constants.enums.IntegerPool;
 import com.kapcb.framework.common.constants.enums.StringPool;
-import com.kapcb.framework.logging.model.ILog;
+import com.kapcb.framework.logging.processor.ILog;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;

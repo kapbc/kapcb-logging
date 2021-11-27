@@ -1,13 +1,18 @@
 package com.kapcb.framework.logging.processor;
 
 import com.kapcb.framework.common.constants.enums.StringPool;
+import com.kapcb.framework.common.util.ThrowableUtil;
 import com.kapcb.framework.logging.actuator.CollectorActuator;
 import com.kapcb.framework.logging.collector.ILogCollector;
+import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
+import com.kapcb.framework.logging.extractor.LogExtractor;
 import com.kapcb.framework.logging.properties.LogProperties;
 import com.kapcb.framework.logging.support.SpringElSupport;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -70,12 +75,74 @@ public class LogProcessor {
         return applicationContext.getApplicationName();
     }
 
-    public String getServerName(){
+    public String getServerName() {
         return this.serverName;
     }
 
-    public Object proceed(LogProperties logProperties, ProceedingJoinPoint proceedingJoinPoint){
+    public Object proceed(LogProperties logProperties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        try {
+            LogData.removeCurrent();
+            ILog log = LogData.getCurrent();
+            return proceed(logProperties, log, proceedingJoinPoint);
+        } finally {
+            LogData.removeCurrent();
+        }
+    }
 
+    public Object proceed(LogProperties logProperties, ILog log, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        Object result = null;
+        Boolean success = false;
+
+        try {
+            result = proceedingJoinPoint.proceed();
+            success = true;
+            return result;
+        } catch (Throwable throwable) {
+            if (logProperties.getStackTraceOnError()) {
+                String stackTrace = ThrowableUtil.getStackTrace(throwable);
+                LogData.step("fail : \n" + stackTrace);
+            }
+            throw throwable;
+        } finally {
+            if (!logProperties.getLogOnError()) {
+                log.setServerName(this.serverName);
+                log.setCostTime(System.currentTimeMillis() - log.getLogDate().getTime());
+                MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
+                log.setProcessMethod(signature.getDeclaringTypeName() + StringPool.SHARP.value() + signature.getName());
+                LogExtractor.logHttpRequest(log, logProperties.getHeaders());
+                if (logProperties.getArgs()) {
+                    log.setArgs(LogExtractor.getArgs(signature.getParameterNames(), proceedingJoinPoint.getArgs()));
+                }
+                if (logProperties.getResponse()) {
+                    log.setResponse(LogExtractor.getResult(result));
+                }
+                log.setSuccess(success);
+                LogData.setCurrent(log);
+                if (logProperties.getEnableAsync()) {
+                    collectorActuator.asyncExecute(selectLogCollector(logProperties.getCollector()), LogData.getCurrent());
+                } else {
+                    collectorActuator.execute(selectLogCollector(logProperties.getCollector()), LogData.getCurrent());
+                }
+            }
+        }
+    }
+
+    private ILogCollector selectLogCollector(Class<? extends ILogCollector> clazz) {
+        if (Objects.isNull(clazz) || Objects.equals(clazz, NothingLogCollector.class)) {
+            return logCollector;
+        } else {
+            ILogCollector logCollector;
+            try {
+                logCollector = applicationContext.getBean(clazz);
+            } catch (Exception e) {
+                logCollector = collectors.get(clazz);
+                if (Objects.isNull(logCollector)) {
+                    logCollector = BeanUtils.instantiateClass(clazz);
+                    collectors.put(clazz, logCollector);
+                }
+            }
+            return logCollector;
+        }
     }
 
 }

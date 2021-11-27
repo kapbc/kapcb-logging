@@ -1,8 +1,7 @@
 package com.kapcb.framework.logging.collector.impl;
 
-import com.kapcb.framework.logging.collector.Collector;
 import com.kapcb.framework.logging.collector.ILogCollector;
-import com.kapcb.framework.logging.model.ILog;
+import com.kapcb.framework.logging.processor.ILog;
 
 /**
  * <a>Title: NothingLogCollector </a>

@@ -1,4 +1,4 @@
-package com.kapcb.framework.logging.model;
+package com.kapcb.framework.logging.processor;
 
 import java.util.Date;
 
@@ -25,13 +25,19 @@ public interface ILog {
 
     void setHttpMethod(String httpMethod);
 
+    void setProcessMethod(String processMethod);
+
     void setHeaders(Object headers);
 
     void setContent(String content);
 
-    void setResponseBody(Object responseBody);
+    void setArgs(Object args);
+
+    void setResponse(Object response);
 
     void setLogDate(Date logDate);
+
+    Date getLogDate();
 
     void setCostTime(Long costTime);
 
@@ -40,5 +46,4 @@ public interface ILog {
     void setThreadId(Long threadId);
 
     void setSuccess(Boolean success);
-
 }

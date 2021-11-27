@@ -1,6 +1,6 @@
 package com.kapcb.framework.logging.collector;
 
-import com.kapcb.framework.logging.model.ILog;
+import com.kapcb.framework.logging.processor.ILog;
 
 /**
  * <a>Title: ILogCollector </a>
