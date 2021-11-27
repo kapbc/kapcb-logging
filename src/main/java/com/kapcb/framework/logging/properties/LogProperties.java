@@ -1,6 +1,5 @@
 package com.kapcb.framework.logging.properties;
 
-import com.kapcb.framework.logging.collector.Collector;
 import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
 import lombok.Data;
@@ -49,6 +48,9 @@ public class LogProperties {
      */
     private Boolean enableAsync;
 
+    /**
+     * 收集器
+     */
     private Class<? extends ILogCollector> collector;
 
     public LogProperties() {

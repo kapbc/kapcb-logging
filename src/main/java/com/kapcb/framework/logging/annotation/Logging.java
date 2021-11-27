@@ -1,6 +1,5 @@
 package com.kapcb.framework.logging.annotation;
 
-import com.kapcb.framework.logging.collector.Collector;
 import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
 import org.springframework.http.HttpHeaders;

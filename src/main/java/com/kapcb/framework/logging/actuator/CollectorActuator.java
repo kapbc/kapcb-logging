@@ -1,6 +1,5 @@
 package com.kapcb.framework.logging.actuator;
 
-import cn.hutool.extra.compress.extractor.Extractor;
 import com.kapcb.framework.logging.collector.Collector;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;

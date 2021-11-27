@@ -31,8 +31,4 @@ public class LogMessageFormatter {
         return StrUtil.format(template, args);
     }
 
-    public static void main(String[] args) {
-        String format = format("adada : {}, dads : {}", "111", "222");
-        System.out.println("format = " + format);
-    }
 }
