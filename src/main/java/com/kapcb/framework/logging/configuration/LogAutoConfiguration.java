@@ -3,7 +3,7 @@ package com.kapcb.framework.logging.configuration;
 import com.kapcb.framework.common.constants.enums.IntegerPool;
 import com.kapcb.framework.logging.collector.Collector;
 import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
-import kapcb.framework.web.configuration.AsyncConfiguration;
+import com.kapcb.framework.web.configuration.AsyncConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
