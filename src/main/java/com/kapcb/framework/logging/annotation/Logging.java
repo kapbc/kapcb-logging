@@ -36,7 +36,7 @@ public @interface Logging {
 
     boolean stackTraceOnError() default false;
 
-    boolean asyncMode() default true;
+    boolean enableAsync() default true;
 
     Class<? extends Collector> collector() default NothingLogCollector.class;
 }
