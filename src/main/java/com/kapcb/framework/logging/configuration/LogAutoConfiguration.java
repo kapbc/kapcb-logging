@@ -13,9 +13,9 @@ import java.util.concurrent.Executor;
 
 
 /**
- * <a>Title: AopLogAutoConfiguration </a>
+ * <a>Title: LogAutoConfiguration </a>
  * <a>Author: Kapcb <a>
- * <a>Description: AopLogAutoConfiguration <a>
+ * <a>Description: LogAutoConfiguration <a>
  *
  * @author Kapcb
  * @version 1.0
@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
  * @since 1.0
  */
 @Slf4j
-public class AopLogAutoConfiguration {
+public class LogAutoConfiguration {
 
     private static final String DEFAULT_COLLECTOR_NAME_PREFIX = "defaultCollectorAsyncExecutor-";
 
