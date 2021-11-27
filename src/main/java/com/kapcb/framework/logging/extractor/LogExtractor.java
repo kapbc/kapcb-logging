@@ -1,23 +1,23 @@
 package com.kapcb.framework.logging.extractor;
 
+import com.kapcb.framework.common.constants.enums.IntegerPool;
 import com.kapcb.framework.common.constants.enums.StringPool;
 import com.kapcb.framework.logging.model.ILog;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.web.context.request.RequestAttributes;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.PongMessage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -59,10 +59,78 @@ public class LogExtractor {
         return Objects.nonNull(requestAttributes) ? requestAttributes.getResponse() : null;
     }
 
-    private static Object getArgs(String[] paramNames, Object[] args) {
+    public static Object getArgs(String[] paramNames, Object[] args) {
+        if (ArrayUtils.isEmpty(paramNames) || ArrayUtils.isEmpty(args)) {
+            return null;
+        }
         Object target;
+        if (Objects.equals(args.length, IntegerPool.ONE.value())) {
+            target = args[IntegerPool.ZERO.value()];
+        } else {
+            target = args;
+        }
+        HttpServletRequest request = getRequest();
+        if (Objects.nonNull(request) && StringUtils.isNotBlank(request.getContentType())) {
+            String contentType = request.getContentType();
+            if (MediaType.APPLICATION_XML_VALUE.equals(contentType)) {
+                return xmlArgs(target);
+            }
+            if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+                return target;
+            }
+        }
+        return appletArgs(paramNames, args);
+    }
 
+    /**
+     * extractor request information to log
+     *
+     * @param log     ILog
+     * @param headers String[]
+     */
+    public static void logHttpRequest(ILog log, String[] headers) {
+        HttpServletRequest request = getRequest();
+        if (Objects.nonNull(request)) {
+            log.setClientIp(request.getRemoteAddr());
+            log.setRequestUrl(request.getRequestURL().toString());
+            log.setHost(request.getLocalAddr());
+            log.setPort(request.getLocalPort());
+            log.setHttpMethod(request.getMethod());
+            if (ArrayUtils.isNotEmpty(headers)) {
+                Map<String, String> requestHeadMap = new HashMap<>(4);
+                for (String header : headers) {
+                    requestHeadMap.put(header, request.getHeader(header));
+                }
+                log.setHeaders(requestHeadMap);
+            }
+        }
+    }
 
+    public static Object getResult(Object resp) {
+        if (Objects.isNull(resp)) {
+            return null;
+        }
+        HttpServletResponse response = getResponse();
+        if (Objects.nonNull(response) && MediaType.APPLICATION_XML_VALUE.equals(response.getContentType())) {
+            return xmlArgs(resp);
+        } else {
+            return resp;
+        }
+    }
+
+    private static Object appletArgs(String[] paramNames, Object[] args) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < paramNames.length; i++) {
+            String paramValue = StringPool.EMPTY_STRING.value();
+            if (Objects.nonNull(args[i])) {
+                paramValue = args[i].toString();
+            }
+            sb.append(paramNames[i]).append(StringPool.EQUALS.value()).append(paramValue).append(StringPool.AND.value());
+        }
+        if (Objects.equals(sb.lastIndexOf(StringPool.AND.value()), IntegerPool.MINUS_ONE.value())) {
+            sb.deleteCharAt(sb.lastIndexOf(StringPool.AND.value()));
+        }
+        return sb.toString();
     }
 
     /**
@@ -97,30 +165,6 @@ public class LogExtractor {
             marshaller.setProperty(Marshaller.JAXB_ENCODING, StringPool.CHARACTER_SET_UTF_8_LOWER.value());
             MARSHALLER_MAP.put(clazz, marshaller);
             return marshaller;
-        }
-    }
-
-    /**
-     * extractor request information to log
-     *
-     * @param log     ILog
-     * @param headers String[]
-     */
-    public static void logHttpRequest(ILog log, String[] headers) {
-        HttpServletRequest request = getRequest();
-        if (Objects.nonNull(request)) {
-            log.setClientIp(request.getRemoteAddr());
-            log.setRequestUrl(request.getRequestURL().toString());
-            log.setHost(request.getLocalAddr());
-            log.setPort(request.getLocalPort());
-            log.setHttpMethod(request.getMethod());
-            if (ArrayUtils.isNotEmpty(headers)) {
-                Map<String, String> requestHeadMap = new HashMap<>(4);
-                for (String header : headers) {
-                    requestHeadMap.put(header, request.getHeader(header));
-                }
-                log.setHeaders(requestHeadMap);
-            }
         }
     }
 }
