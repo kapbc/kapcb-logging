@@ -20,10 +20,6 @@ import java.util.Objects;
 @UtilityClass
 public class LogMessageFormatter {
 
-    private static final String DELIMITER = "{}";
-    private static final String ESCAPE_CHAR = "\\";
-    private static final String EMPTY = "";
-
     public static String format(String template, Object... args) {
         if (StringUtils.isBlank(template) || Objects.isNull(args)) {
             throw new LogOperationException("log message formatter's template or args can not be null");
