@@ -1,7 +1,7 @@
 package com.kapcb.framework.logging.properties;
 
 import com.kapcb.framework.logging.collector.ILogCollector;
-import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
+import com.kapcb.framework.logging.collector.impl.DefaultEmptyLogCollector;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
 
@@ -66,6 +66,6 @@ public class LogProperties {
         this.response = true;
         this.stackTraceOnError = true;
         this.enableAsync = true;
-        this.collector = NothingLogCollector.class;
+        this.collector = DefaultEmptyLogCollector.class;
     }
 }

@@ -4,7 +4,7 @@ import com.kapcb.framework.common.constants.enums.StringPool;
 import com.kapcb.framework.common.util.ThrowableUtil;
 import com.kapcb.framework.logging.actuator.CollectorActuator;
 import com.kapcb.framework.logging.collector.ILogCollector;
-import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
+import com.kapcb.framework.logging.collector.impl.DefaultEmptyLogCollector;
 import com.kapcb.framework.logging.extractor.LogExtractor;
 import com.kapcb.framework.logging.properties.LogProperties;
 import com.kapcb.framework.logging.support.SpringElSupport;
@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -44,7 +45,6 @@ public class LogProcessor {
 
     private final SpringElSupport springElSupport = new SpringElSupport();
     private final Map<Class<? extends ILogCollector>, ILogCollector> collectors = new ConcurrentHashMap<>(4);
-
 
     @Autowired
     public LogProcessor(ApplicationContext applicationContext,
@@ -130,7 +130,7 @@ public class LogProcessor {
     }
 
     private ILogCollector selectLogCollector(Class<? extends ILogCollector> clazz) {
-        if (Objects.isNull(clazz) || Objects.equals(clazz, NothingLogCollector.class)) {
+        if (Objects.isNull(clazz) || Objects.equals(clazz, DefaultEmptyLogCollector.class)) {
             return logCollector;
         } else {
             ILogCollector logCollector;

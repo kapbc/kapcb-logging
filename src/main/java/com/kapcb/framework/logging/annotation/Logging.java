@@ -1,7 +1,7 @@
 package com.kapcb.framework.logging.annotation;
 
 import com.kapcb.framework.logging.collector.ILogCollector;
-import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
+import com.kapcb.framework.logging.collector.impl.DefaultEmptyLogCollector;
 import org.springframework.http.HttpHeaders;
 
 import java.lang.annotation.Documented;
@@ -38,6 +38,6 @@ public @interface Logging {
 
     boolean enableAsync() default true;
 
-    Class<? extends ILogCollector> collector() default NothingLogCollector.class;
+    Class<? extends ILogCollector> collector() default DefaultEmptyLogCollector.class;
 
 }

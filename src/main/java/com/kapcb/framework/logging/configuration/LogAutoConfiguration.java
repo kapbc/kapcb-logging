@@ -2,7 +2,7 @@ package com.kapcb.framework.logging.configuration;
 
 import com.kapcb.framework.common.constants.enums.IntegerPool;
 import com.kapcb.framework.logging.collector.Collector;
-import com.kapcb.framework.logging.collector.impl.NothingLogCollector;
+import com.kapcb.framework.logging.collector.impl.DefaultEmptyLogCollector;
 import com.kapcb.framework.web.configuration.AsyncConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,7 +33,7 @@ public class LogAutoConfiguration {
      * If there don't have any log collector in configuration
      * will use default NothingLogCollector as an alternative
      * <p>
-     * NothingLogCollector {@link NothingLogCollector}
+     * DefaultEmptyLogCollector {@link DefaultEmptyLogCollector}
      *
      * @return {@link Collector}
      * @since 1.0
@@ -42,7 +42,7 @@ public class LogAutoConfiguration {
     @ConditionalOnMissingBean(value = {Collector.class})
     public Collector defaultLogCollector() {
         log.info("[ can not found log collector, will use default log collector ]");
-        return new NothingLogCollector();
+        return new DefaultEmptyLogCollector();
     }
 
     /**
