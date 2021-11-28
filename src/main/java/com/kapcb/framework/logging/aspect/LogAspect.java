@@ -64,4 +64,5 @@ public final class LogAspect {
         }
         return logProperties;
     }
+
 }
