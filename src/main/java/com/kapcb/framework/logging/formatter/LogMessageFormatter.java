@@ -26,5 +26,4 @@ public class LogMessageFormatter {
         }
         return StrUtil.format(template, args);
     }
-
 }
