@@ -56,7 +56,7 @@ public class LogAutoConfiguration {
      * asyncExecutor {@link AsyncConfiguration#asyncExecutor()}
      */
     @Bean
-    @ConditionalOnMissingBean(name = {"asyncExecutor"})
+    @ConditionalOnMissingBean(value = {Executor.class})
     public Executor defaultCollectorAsyncExecutor() {
         log.info("[ can not found any customer async executor, will use default collector async executor ]");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
