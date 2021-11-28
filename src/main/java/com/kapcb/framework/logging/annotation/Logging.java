@@ -39,4 +39,5 @@ public @interface Logging {
     boolean enableAsync() default true;
 
     Class<? extends ILogCollector> collector() default NothingLogCollector.class;
+
 }
