@@ -1,18 +1,16 @@
 package com.kapcb.framework.logging.support;
 
-import com.kapcb.framework.common.constants.enums.IntegerPool;
-import com.kapcb.framework.logging.model.ExpressionRootObject;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.expression.MethodBasedEvaluationContext;
-import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.Expression;
+import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.util.StringUtils;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <a>Title: SpringElSupport </a>
@@ -26,28 +24,29 @@ import java.util.Map;
 @Slf4j
 public class SpringElSupport {
 
-    private final SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
-    private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-    private final Map<String, Expression> expressions = new HashMap<>(IntegerPool.FOUR.value());
+    private static final SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
+    private static final ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
-    public Object getByExpression(Method method, Object target, Object[] args, String springElExpression) {
+    public static <T> T parse(String springEl, Method method, Object[] arguments, Class<T> clazz) {
         try {
-            if (StringUtils.hasLength(springElExpression)) {
-                Expression expression;
-                MethodBasedEvaluationContext methodBasedEvaluationContext = new MethodBasedEvaluationContext(new ExpressionRootObject(target, args), method, args, parameterNameDiscoverer);
-                if (expressions.containsKey(springElExpression)) {
-                    return expressions.get(springElExpression).getValue(methodBasedEvaluationContext);
-                } else {
-                    expression = spelExpressionParser.parseExpression(springElExpression);
-                    Object value = expression.getValue(methodBasedEvaluationContext);
-                    expressions.put(springElExpression, expression);
-                    return value;
+            String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
+            if (ArrayUtil.isNotEmpty(parameterNames)) {
+                StandardEvaluationContext context = new StandardEvaluationContext();
+                for (int i = 0; i < parameterNames.length; i++) {
+                    context.setVariable(parameterNames[i], arguments[i]);
                 }
+                return parseException(springEl).getValue(context, clazz);
             }
         } catch (Exception e) {
-            log.error("get by expression error, spring el expression is : {}, error message is : {}", springElExpression, e.getMessage());
+            log.error("parse spring expression error, error message is : {}", e.getMessage());
         }
-        return springElExpression;
+        return null;
     }
 
+    private static Expression parseException(String springEl) {
+        if (StrUtil.startWith(springEl, "#{") && StrUtil.endWith(springEl, "}")) {
+            return spelExpressionParser.parseExpression(springEl, new TemplateParserContext());
+        }
+        return spelExpressionParser.parseExpression(springEl);
+    }
 }

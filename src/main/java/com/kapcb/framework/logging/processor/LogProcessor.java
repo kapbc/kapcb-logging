@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -43,7 +42,6 @@ public class LogProcessor {
     private final CollectorActuator collectorActuator;
     private final ApplicationContext applicationContext;
 
-    private final SpringElSupport springElSupport = new SpringElSupport();
     private final Map<Class<? extends ILogCollector>, ILogCollector> collectors = new ConcurrentHashMap<>(4);
 
     @Autowired
@@ -75,10 +73,6 @@ public class LogProcessor {
         return applicationContext.getApplicationName();
     }
 
-    public String getServerName() {
-        return this.serverName;
-    }
-
     public Object proceed(LogProperties logProperties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         try {
             LogData.removeCurrent();
@@ -108,7 +102,7 @@ public class LogProcessor {
                 log.setServerName(this.serverName);
                 log.setCostTime(System.currentTimeMillis() - log.getLogDate().getTime());
                 MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-                String tag = springElSupport.getByExpression(signature.getMethod(), proceedingJoinPoint.getTarget(), proceedingJoinPoint.getArgs(), logProperties.getTag()).toString();
+                String tag = SpringElSupport.parse(logProperties.getTag(), signature.getMethod(), proceedingJoinPoint.getArgs(), String.class);
                 System.out.println("tag = " + tag);
                 log.setProcessMethod(signature.getDeclaringTypeName() + StringPool.SHARP.value() + signature.getName());
                 LogExtractor.logHttpRequest(log, logProperties.getHeaders());
