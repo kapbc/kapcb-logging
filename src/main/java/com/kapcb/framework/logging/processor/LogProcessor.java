@@ -42,10 +42,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LogProcessor implements ApplicationContextAware, InitializingBean {
 
     private String serverName;
+    private ApplicationContext applicationContext;
 
     private final ILogCollector logCollector;
     private final CollectorActuator collectorActuator;
-    private ApplicationContext applicationContext;
 
     private final Map<Class<? extends ILogCollector>, ILogCollector> collectors = new ConcurrentHashMap<>(4);
 
