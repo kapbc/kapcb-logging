@@ -13,8 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -34,24 +38,22 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 @Component
-public class LogProcessor {
+@Scope("singleton")
+public class LogProcessor implements ApplicationContextAware, InitializingBean {
 
-    private final String serverName;
+    private String serverName;
 
     private final ILogCollector logCollector;
     private final CollectorActuator collectorActuator;
-    private final ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     private final Map<Class<? extends ILogCollector>, ILogCollector> collectors = new ConcurrentHashMap<>(4);
 
     @Autowired
-    public LogProcessor(ApplicationContext applicationContext,
-                        CollectorActuator collectorActuator,
+    public LogProcessor(CollectorActuator collectorActuator,
                         ILogCollector logCollector) {
-        this.applicationContext = applicationContext;
         this.collectorActuator = collectorActuator;
         this.logCollector = logCollector;
-        this.serverName = getServerName(applicationContext);
     }
 
     private String getServerName(ApplicationContext applicationContext) {
@@ -139,5 +141,15 @@ public class LogProcessor {
             }
             return logCollector;
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.serverName = getServerName(applicationContext);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
