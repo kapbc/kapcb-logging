@@ -150,6 +150,8 @@ public class LogProcessor implements ApplicationContextAware, InitializingBean {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        if (Objects.isNull(this.applicationContext)) {
+            this.applicationContext = applicationContext;
+        }
     }
 }
