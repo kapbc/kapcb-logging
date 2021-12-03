@@ -154,4 +154,5 @@ public class LogProcessor implements ApplicationContextAware, InitializingBean {
             this.applicationContext = applicationContext;
         }
     }
+
 }

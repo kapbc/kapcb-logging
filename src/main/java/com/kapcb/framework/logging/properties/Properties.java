@@ -11,4 +11,6 @@ package com.kapcb.framework.logging.properties;
  * @since 1.0
  */
 public interface Properties {
+
+
 }
