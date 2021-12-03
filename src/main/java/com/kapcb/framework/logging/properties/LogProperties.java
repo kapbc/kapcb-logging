@@ -16,7 +16,7 @@ import org.springframework.http.HttpHeaders;
  * @since 1.0
  */
 @Data
-public class LogProperties {
+public class LogProperties implements Properties{
 
     /**
      * 仅当发生异常错误是打印日志
