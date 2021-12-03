@@ -1,4 +1,4 @@
-package com.kapcb.framework.logging.collector.impl;
+package com.kapcb.framework.logging.collector;
 
 import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.processor.ILog;

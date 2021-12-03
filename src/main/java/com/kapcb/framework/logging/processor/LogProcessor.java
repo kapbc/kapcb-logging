@@ -4,7 +4,7 @@ import com.kapcb.framework.common.constants.enums.StringPool;
 import com.kapcb.framework.common.util.ThrowableUtil;
 import com.kapcb.framework.logging.actuator.CollectorActuator;
 import com.kapcb.framework.logging.collector.ILogCollector;
-import com.kapcb.framework.logging.collector.impl.DefaultEmptyLogCollector;
+import com.kapcb.framework.logging.collector.DefaultEmptyLogCollector;
 import com.kapcb.framework.logging.extractor.LogExtractor;
 import com.kapcb.framework.logging.properties.LogProperties;
 import com.kapcb.framework.logging.support.SpringElSupport;
