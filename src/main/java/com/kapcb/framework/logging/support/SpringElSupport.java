@@ -2,6 +2,7 @@ package com.kapcb.framework.logging.support;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import com.kapcb.framework.common.constants.enums.StringPool;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -46,7 +47,7 @@ public class SpringElSupport {
     }
 
     private static Expression parseExpression(String springEl) {
-        if (StrUtil.startWith(springEl, "#{") && StrUtil.endWith(springEl, "}")) {
+        if (StrUtil.startWith(springEl, StringPool.SHARP.value() + StringPool.OPENING_PARENTHESIS.value()) && StrUtil.endWith(springEl, StringPool.CLOSED_PARENTHESIS.value())) {
             return spelExpressionParser.parseExpression(springEl, new TemplateParserContext());
         }
         return spelExpressionParser.parseExpression(springEl);
