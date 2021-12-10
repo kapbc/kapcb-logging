@@ -36,10 +36,12 @@ public final class LogAspect extends AbstractLogAspect {
         this.logProcessor = logProcessor;
     }
 
+    @Override
     @Pointcut(value = "@annotation(com.kapcb.framework.logging.annotation.Logging)||@within(com.kapcb.framework.logging.annotation.Logging)")
     public void logPointCut() {
     }
 
+    @Override
     @Around("logPointCut()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return logProcessor.proceed(getLogProperties(proceedingJoinPoint), proceedingJoinPoint);

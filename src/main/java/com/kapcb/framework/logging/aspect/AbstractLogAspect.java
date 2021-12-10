@@ -19,7 +19,9 @@ import java.util.Objects;
  */
 public abstract class AbstractLogAspect {
 
+    protected abstract void logPointCut();
 
+    protected abstract Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable;
 
     protected static LogInfoProperties getLogProperties(ProceedingJoinPoint proceedingJoinPoint) {
         LogInfoProperties logProperties = new LogInfoProperties();
