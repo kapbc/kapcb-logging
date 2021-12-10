@@ -1,7 +1,6 @@
 package com.kapcb.framework.logging.processor;
 
-import com.kapcb.framework.logging.properties.LogProperties;
-import com.kapcb.framework.logging.properties.Properties;
+import com.kapcb.framework.logging.properties.LogInfoProperties;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
@@ -16,6 +15,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
  */
 public interface Processor {
 
-    Object proceed(Properties properties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable;
+    Object proceed(LogInfoProperties logInfoProperties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable;
 
 }

@@ -2,7 +2,7 @@ package com.kapcb.framework.logging.aspect;
 
 import com.kapcb.framework.logging.annotation.Logging;
 import com.kapcb.framework.logging.processor.LogProcessor;
-import com.kapcb.framework.logging.properties.LogProperties;
+import com.kapcb.framework.logging.properties.LogInfoProperties;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,7 +27,7 @@ import java.util.Objects;
 @Aspect
 @Component
 @EnableAspectJAutoProxy(exposeProxy = true)
-public final class LogAspect {
+public final class LogAspect extends AbstractLogAspect {
 
     private final LogProcessor logProcessor;
 
@@ -43,26 +43,6 @@ public final class LogAspect {
     @Around("logPointCut()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return logProcessor.proceed(getLogProperties(proceedingJoinPoint), proceedingJoinPoint);
-    }
-
-    private static LogProperties getLogProperties(ProceedingJoinPoint proceedingJoinPoint) {
-        LogProperties logProperties = new LogProperties();
-        MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-        Logging logging = signature.getMethod().getAnnotation(Logging.class);
-        if (Objects.isNull(logging)) {
-            logging = proceedingJoinPoint.getTarget().getClass().getAnnotation(Logging.class);
-        }
-        if (Objects.nonNull(logging)) {
-            logProperties.setLogOnError(logging.logOnError());
-            logProperties.setHeaders(logging.headers());
-            logProperties.setArgs(logging.args());
-            logProperties.setTag(logging.tags());
-            logProperties.setResponse(logging.response());
-            logProperties.setStackTraceOnError(logging.stackTraceOnError());
-            logProperties.setEnableAsync(logging.enableAsync());
-            logProperties.setCollector(logging.collector());
-        }
-        return logProperties;
     }
 
 }

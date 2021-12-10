@@ -6,7 +6,7 @@ import com.kapcb.framework.logging.actuator.CollectorActuator;
 import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.collector.DefaultEmptyLogCollector;
 import com.kapcb.framework.logging.extractor.LogExtractor;
-import com.kapcb.framework.logging.properties.LogProperties;
+import com.kapcb.framework.logging.properties.LogInfoProperties;
 import com.kapcb.framework.logging.support.SpringElSupport;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Scope("singleton")
-public class LogProcessor implements ApplicationContextAware, InitializingBean {
+public class LogProcessor implements Processor, ApplicationContextAware, InitializingBean {
 
     private String serverName;
     private ApplicationContext applicationContext;
@@ -75,17 +75,18 @@ public class LogProcessor implements ApplicationContextAware, InitializingBean {
         return applicationContext.getApplicationName();
     }
 
-    public Object proceed(LogProperties logProperties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    @Override
+    public Object proceed(LogInfoProperties logInfoProperties, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         try {
             LogData.removeCurrent();
             ILog log = LogData.getCurrent();
-            return proceed(logProperties, log, proceedingJoinPoint);
+            return proceed(logInfoProperties, log, proceedingJoinPoint);
         } finally {
             LogData.removeCurrent();
         }
     }
 
-    public Object proceed(LogProperties logProperties, ILog log, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object proceed(LogInfoProperties logInfoProperties, ILog log, ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object result = null;
         Boolean success = false;
 
@@ -94,32 +95,32 @@ public class LogProcessor implements ApplicationContextAware, InitializingBean {
             success = true;
             return result;
         } catch (Throwable throwable) {
-            if (logProperties.getStackTraceOnError()) {
+            if (logInfoProperties.getStackTraceOnError()) {
                 String stackTrace = ThrowableUtil.getStackTrace(throwable);
                 LogData.step("fail : " + stackTrace);
             }
             throw throwable;
         } finally {
-            if (!logProperties.getLogOnError()) {
+            if (!logInfoProperties.getLogOnError()) {
                 log.setServerName(this.serverName);
                 log.setCostTime(System.currentTimeMillis() - log.getLogDate().getTime());
                 MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-                String tag = SpringElSupport.parse(logProperties.getTag(), signature.getMethod(), proceedingJoinPoint.getArgs(), String.class);
+                String tag = SpringElSupport.parse(logInfoProperties.getTag(), signature.getMethod(), proceedingJoinPoint.getArgs(), String.class);
                 System.out.println("tag = " + tag);
                 log.setProcessMethod(signature.getDeclaringTypeName() + StringPool.SHARP.value() + signature.getName());
-                LogExtractor.logHttpRequest(log, logProperties.getHeaders());
-                if (logProperties.getArgs()) {
+                LogExtractor.logHttpRequest(log, logInfoProperties.getHeaders());
+                if (logInfoProperties.getArgs()) {
                     log.setArgs(LogExtractor.getArgs(signature.getParameterNames(), proceedingJoinPoint.getArgs()));
                 }
-                if (logProperties.getResponse()) {
+                if (logInfoProperties.getResponse()) {
                     log.setResponse(LogExtractor.getResult(result));
                 }
                 log.setSuccess(success);
                 LogData.setCurrent(log);
-                if (logProperties.getEnableAsync()) {
-                    collectorActuator.asyncExecute(selectLogCollector(logProperties.getCollector()), LogData.getCurrent());
+                if (logInfoProperties.getEnableAsync()) {
+                    collectorActuator.asyncExecute(selectLogCollector(logInfoProperties.getCollector()), LogData.getCurrent());
                 } else {
-                    collectorActuator.execute(selectLogCollector(logProperties.getCollector()), LogData.getCurrent());
+                    collectorActuator.execute(selectLogCollector(logInfoProperties.getCollector()), LogData.getCurrent());
                 }
             }
         }

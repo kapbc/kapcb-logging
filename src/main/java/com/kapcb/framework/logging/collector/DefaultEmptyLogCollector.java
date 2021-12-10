@@ -1,6 +1,5 @@
 package com.kapcb.framework.logging.collector;
 
-import com.kapcb.framework.logging.collector.ILogCollector;
 import com.kapcb.framework.logging.processor.ILog;
 
 /**
@@ -19,4 +18,5 @@ public class DefaultEmptyLogCollector implements ILogCollector {
         // empty poll  do nothing
         // by order of awesome kapcb
     }
+
 }

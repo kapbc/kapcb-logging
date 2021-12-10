@@ -3,6 +3,7 @@ package com.kapcb.framework.logging.configuration;
 import com.kapcb.framework.common.constants.enums.IntegerPool;
 import com.kapcb.framework.logging.collector.Collector;
 import com.kapcb.framework.logging.collector.DefaultEmptyLogCollector;
+import com.kapcb.framework.logging.processor.ILog;
 import com.kapcb.framework.web.configuration.AsyncConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -40,7 +41,7 @@ public class LogAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(value = {Collector.class})
-    public Collector defaultLogCollector() {
+    public Collector<? extends ILog> defaultLogCollector() {
         log.info("[ can not found log collector, will use default log collector ]");
         return new DefaultEmptyLogCollector();
     }
@@ -69,4 +70,5 @@ public class LogAutoConfiguration {
         executor.initialize();
         return executor;
     }
+
 }
