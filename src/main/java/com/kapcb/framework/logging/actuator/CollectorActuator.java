@@ -41,4 +41,5 @@ public class CollectorActuator {
     public <D> void execute(Collector<D> collector, D log) {
         collector.collect(log);
     }
+
 }
